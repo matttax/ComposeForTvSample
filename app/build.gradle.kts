@@ -70,6 +70,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.window)
+    implementation(libs.androidx.tv.material)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
