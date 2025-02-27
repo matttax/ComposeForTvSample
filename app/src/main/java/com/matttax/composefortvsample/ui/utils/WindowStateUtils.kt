@@ -9,3 +9,4 @@ fun FoldingFeature.isBookPosture(): Boolean {
 
 fun FoldingFeature.isSeparating(): Boolean {
     return state == FoldingFeature.State.FLAT && isSeparating
+}
