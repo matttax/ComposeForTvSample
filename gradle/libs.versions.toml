@@ -19,6 +19,7 @@ junit = "4.13.2"
 kotlin = "2.1.10"
 kotlinx-serialization-json = "1.7.3"
 version-catalog-update = "0.8.5"
+accompanist-adaptive = "0.26.2-beta"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
@@ -48,6 +49,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.re
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+google-accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist-adaptive" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

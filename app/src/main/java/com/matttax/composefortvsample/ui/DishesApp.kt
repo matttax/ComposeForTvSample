@@ -21,14 +21,14 @@ fun DishesApp(
     navigateToDetail: (Long, ContentType) -> Unit = { _, _ -> },
 ) {
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
-    val foldingDevicePosture = when {
+    val devicePosture = when {
         foldingFeature?.isBookPosture() == true -> DevicePosture.BookPosture(foldingFeature.bounds)
         foldingFeature?.isSeparating() == true -> DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
         else -> DevicePosture.NormalPosture
     }
     val contentType = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> ContentType.SINGLE_PANE
-        WindowWidthSizeClass.Medium -> if (foldingDevicePosture != DevicePosture.NormalPosture) {
+        WindowWidthSizeClass.Medium -> if (devicePosture != DevicePosture.NormalPosture) {
             ContentType.DUAL_PANE
         } else {
             ContentType.SINGLE_PANE
