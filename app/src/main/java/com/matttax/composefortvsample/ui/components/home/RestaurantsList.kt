@@ -30,13 +30,13 @@ fun RestaurantsList(
         modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)
     ) {
         RestaurantSearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             restaurants = restaurants,
             onSearchItemSelected = { searchedEmail ->
                 navigateToDetail(searchedEmail.id, ContentType.SINGLE_PANE)
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
         )
         LazyColumn(
             modifier = modifier

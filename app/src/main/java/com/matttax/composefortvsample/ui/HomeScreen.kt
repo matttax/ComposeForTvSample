@@ -31,6 +31,16 @@ fun HomeScreen(
         }
     }
     when (contentType) {
+        ContentType.SINGLE_PANE -> Box(
+            modifier = modifier.fillMaxSize()
+        ) {
+            SinglePaneContent(
+                homeUIState = homeUiState,
+                modifier = Modifier.fillMaxSize(),
+                closeDetailScreen = closeDetailScreen,
+                navigateToDetail = navigateToDetail
+            )
+        }
         ContentType.DUAL_PANE -> TwoPane(
             first = {
                 RestaurantsList(
@@ -48,15 +58,8 @@ fun HomeScreen(
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
             displayFeatures = displayFeatures
         )
-        ContentType.SINGLE_PANE -> Box(
-            modifier = modifier.fillMaxSize()
-        ) {
-            SinglePaneContent(
-                homeUIState = homeUiState,
-                modifier = Modifier.fillMaxSize(),
-                closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail
-            )
-        }
+        ContentType.TV -> TvDishesCarousel(
+            dishes = homeUiState.restaurants.flatMap { it.dishes }
+        )
     }
 }
