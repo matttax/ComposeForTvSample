@@ -3,6 +3,7 @@
 
     <string name="search">Поиск</string>
     <string name="add_to_cart">В корзину</string>
+    <string name="make_order">Оформить заказ</string>
 
     <string name="back_button">Назад</string>
     <string name="dishes">Блюд</string>

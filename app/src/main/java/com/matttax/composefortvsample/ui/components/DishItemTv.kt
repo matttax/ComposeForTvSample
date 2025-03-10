@@ -1,20 +1,31 @@
 package com.matttax.composefortvsample.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
@@ -28,6 +39,7 @@ fun DishItemTv(
     dish: Dish,
     isSelected: Boolean,
     onSelected: () -> Unit,
+    buttonFocusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -84,14 +96,43 @@ fun DishItemTv(
                     .width(160.dp)
                     .align(Alignment.CenterHorizontally),
                 text = dish.name,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 16.sp,
             )
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+            AnimatedVisibility(
+                visible = isSelected,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .width(180.dp)
+                        .padding(20.dp)
+                        .align(Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CardButton(
+                        modifier = Modifier.size(35.dp),
+                        icon = Icons.Default.Remove
+                    )
+                    Text(
+                        text = "0"
+                    )
+                    CardButton(
+                        modifier = Modifier.size(35.dp)
+                            .focusRequester(buttonFocusRequester),
+                        icon = Icons.Default.Add
+                    )
+                }
+            }
         }
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
     }
 }

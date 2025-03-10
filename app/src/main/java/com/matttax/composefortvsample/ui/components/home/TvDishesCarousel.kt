@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +44,10 @@ fun TvDishesCarousel(
     dishes: List<Dish>,
 ) {
     var lastSelected by remember { mutableIntStateOf(-1) }
+    var focusOnButtons by remember { mutableStateOf(false) }
     val focusRequesters = remember { mutableStateMapOf<Int, FocusRequester>() }
+    val cardButtonFocusRequesters = remember { mutableStateMapOf<Int, FocusRequester>() }
+    val externalButtonFocusRequester = remember { FocusRequester() }
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -52,7 +56,16 @@ fun TvDishesCarousel(
                 .align(Alignment.Center)
                 .focusProperties {
                     enter = {
+                        focusOnButtons = false
                         focusRequesters[lastSelected] ?: FocusRequester.Default
+                    }
+                    exit = {
+                        if (!focusOnButtons) {
+                            focusOnButtons = true
+                            cardButtonFocusRequesters[lastSelected] ?: FocusRequester.Default
+                        } else {
+                            externalButtonFocusRequester
+                        }
                     }
                 },
             verticalAlignment = Alignment.CenterVertically,
@@ -61,14 +74,17 @@ fun TvDishesCarousel(
         ) {
             itemsIndexed(dishes) { idx, dish ->
                 val focusRequester = remember { FocusRequester() }
+                val buttonFocusRequester = remember { FocusRequester() }
                 LaunchedEffect(Unit) {
                     focusRequesters[idx] = focusRequester
+                    cardButtonFocusRequesters[idx] = buttonFocusRequester
                 }
                 DishItemTv(
                     modifier = Modifier.focusRequester(focusRequester),
+                    buttonFocusRequester = buttonFocusRequester,
                     onSelected = { lastSelected = idx },
                     isSelected = lastSelected == idx,
-                    dish = dish
+                    dish = dish,
                 )
             }
         }
@@ -86,7 +102,9 @@ fun TvDishesCarousel(
             visible = lastSelected != -1
         ) {
             Button(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .focusRequester(externalButtonFocusRequester),
                 colors = ButtonDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.primary.copy(alpha = .7f),
                     focusedContainerColor = MaterialTheme.colorScheme.primary,
@@ -98,7 +116,7 @@ fun TvDishesCarousel(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.add_to_cart),
+                    text = stringResource(R.string.make_order),
                     textAlign = TextAlign.Center,
                     color = Color.White,
                 )
