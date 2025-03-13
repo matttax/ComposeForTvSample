@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +28,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,9 @@ import androidx.tv.material3.Surface
 import com.matttax.composefortvsample.R
 import com.matttax.composefortvsample.data.model.Dish
 import com.matttax.composefortvsample.ui.components.DishItemTv
+import com.matttax.composefortvsample.ui.components.focus.FocusManager
+import com.matttax.composefortvsample.ui.components.focus.FocusState
+import com.matttax.composefortvsample.ui.components.focus.animateScrollAndCentralizeItem
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -44,10 +49,19 @@ fun TvDishesCarousel(
     dishes: List<Dish>,
 ) {
     var lastSelected by remember { mutableIntStateOf(-1) }
-    var focusOnButtons by remember { mutableStateOf(false) }
-    val focusRequesters = remember { mutableStateMapOf<Int, FocusRequester>() }
-    val cardButtonFocusRequesters = remember { mutableStateMapOf<Int, FocusRequester>() }
+    var focusState by remember { mutableStateOf(FocusState.CARD) }
+    val focusManager = remember { FocusManager() }
+    val listState = rememberLazyListState()
     val externalButtonFocusRequester = remember { FocusRequester() }
+    LaunchedEffect(externalButtonFocusRequester) {
+        focusManager.externalFocusRequester = externalButtonFocusRequester
+    }
+    LaunchedEffect(dishes) {
+        focusManager.provideSize(dishes.size)
+    }
+    LaunchedEffect(lastSelected, focusState) {
+        listState.animateScrollAndCentralizeItem(lastSelected)
+    }
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -56,33 +70,45 @@ fun TvDishesCarousel(
                 .align(Alignment.Center)
                 .focusProperties {
                     enter = {
-                        focusOnButtons = false
-                        focusRequesters[lastSelected] ?: FocusRequester.Default
+                        focusManager.cardFocusRequesters[lastSelected] ?: FocusRequester.Default
                     }
-                    exit = {
-                        if (!focusOnButtons) {
-                            focusOnButtons = true
-                            cardButtonFocusRequesters[lastSelected] ?: FocusRequester.Default
-                        } else {
-                            externalButtonFocusRequester
+                }
+                .onKeyEvent { keyEvent ->
+                    if (keyEvent.nativeKeyEvent.action != android.view.KeyEvent.ACTION_DOWN) {
+                        return@onKeyEvent false
+                    }
+                    focusManager
+                        .processEvent(keyEvent.key, focusState, lastSelected, listState)
+                        ?.let { newState ->
+                            focusState = newState
                         }
-                    }
+                    true
                 },
+            state = listState,
+            userScrollEnabled = false,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             contentPadding = PaddingValues(horizontal = 12.dp)
         ) {
             itemsIndexed(dishes) { idx, dish ->
                 val focusRequester = remember { FocusRequester() }
-                val buttonFocusRequester = remember { FocusRequester() }
+                val rightButtonFocusRequester = remember { FocusRequester() }
+                val leftButtonFocusRequester = remember { FocusRequester() }
                 LaunchedEffect(Unit) {
-                    focusRequesters[idx] = focusRequester
-                    cardButtonFocusRequesters[idx] = buttonFocusRequester
+                    focusManager.apply {
+                        cardFocusRequesters[idx] = focusRequester
+                        rightButtonFocusRequesters[idx] = rightButtonFocusRequester
+                        leftButtonFocusRequesters[idx] = leftButtonFocusRequester
+                    }
                 }
                 DishItemTv(
                     modifier = Modifier.focusRequester(focusRequester),
-                    buttonFocusRequester = buttonFocusRequester,
-                    onSelected = { lastSelected = idx },
+                    rightButtonFocusRequester = rightButtonFocusRequester,
+                    leftButtonFocusRequester = leftButtonFocusRequester,
+                    onSelected = {
+                        focusState = FocusState.CARD
+                        lastSelected = idx
+                    },
                     isSelected = lastSelected == idx,
                     dish = dish,
                 )

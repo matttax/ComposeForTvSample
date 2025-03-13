@@ -39,7 +39,8 @@ fun DishItemTv(
     dish: Dish,
     isSelected: Boolean,
     onSelected: () -> Unit,
-    buttonFocusRequester: FocusRequester,
+    rightButtonFocusRequester: FocusRequester,
+    leftButtonFocusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -120,7 +121,8 @@ fun DishItemTv(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CardButton(
-                        modifier = Modifier.size(35.dp),
+                        modifier = Modifier.size(35.dp)
+                            .focusRequester(leftButtonFocusRequester),
                         icon = Icons.Default.Remove
                     )
                     Text(
@@ -128,7 +130,7 @@ fun DishItemTv(
                     )
                     CardButton(
                         modifier = Modifier.size(35.dp)
-                            .focusRequester(buttonFocusRequester),
+                            .focusRequester(rightButtonFocusRequester),
                         icon = Icons.Default.Add
                     )
                 }
