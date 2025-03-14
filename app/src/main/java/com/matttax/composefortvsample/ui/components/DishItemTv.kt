@@ -39,6 +39,7 @@ fun DishItemTv(
     dish: Dish,
     isSelected: Boolean,
     onSelected: () -> Unit,
+    onClick: () -> Unit,
     rightButtonFocusRequester: FocusRequester,
     leftButtonFocusRequester: FocusRequester,
     modifier: Modifier = Modifier
@@ -83,7 +84,7 @@ fun DishItemTv(
                     focusedScale = 1.1f,
                 )
             },
-            onClick = { }
+            onClick = onClick
         ) {
             AvatarImage(
                 modifier = Modifier.size(180.dp),

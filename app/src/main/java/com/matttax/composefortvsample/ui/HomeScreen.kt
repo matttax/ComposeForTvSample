@@ -10,10 +10,10 @@ import androidx.window.layout.DisplayFeature
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.matttax.composefortvsample.presentation.HomeUiState
+import com.matttax.composefortvsample.ui.components.RestaurantsListTv
 import com.matttax.composefortvsample.ui.components.home.DishesPanel
 import com.matttax.composefortvsample.ui.components.home.RestaurantsList
 import com.matttax.composefortvsample.ui.components.home.SinglePaneContent
-import com.matttax.composefortvsample.ui.components.home.TvDishesCarousel
 import com.matttax.composefortvsample.ui.utils.ContentType
 
 @Composable
@@ -58,8 +58,8 @@ fun HomeScreen(
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
             displayFeatures = displayFeatures
         )
-        ContentType.TV -> TvDishesCarousel(
-            dishes = homeUiState.restaurants.flatMap { it.dishes }
+        ContentType.TV -> RestaurantsListTv(
+            restaurants = homeUiState.restaurants
         )
     }
 }

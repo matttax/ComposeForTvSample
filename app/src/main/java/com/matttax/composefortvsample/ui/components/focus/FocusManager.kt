@@ -9,17 +9,18 @@ class FocusManager {
     val cardFocusRequesters = mutableMapOf<Int, FocusRequester>()
     val rightButtonFocusRequesters = mutableMapOf<Int, FocusRequester>()
     val leftButtonFocusRequesters = mutableMapOf<Int, FocusRequester>()
-    var externalFocusRequester: FocusRequester? = null
 
     private var collectionSize: Int = 0
+
+    fun shouldProcess(direction: Key): Boolean {
+        return direction in handledDirections
+    }
 
     fun processEvent(direction: Key, currentState: FocusState, selected: Int, listState: LazyListState): FocusState? {
         return with(currentState) {
             when(direction) {
                 Key.DirectionRight -> processRight(selected, listState)
                 Key.DirectionLeft -> processLeft(selected, listState)
-                Key.DirectionUp -> processUp(selected)
-                Key.DirectionDown -> processDown(selected)
                 else -> null
             }
         }
@@ -27,6 +28,13 @@ class FocusManager {
 
     fun provideSize(newSize: Int) {
         collectionSize = newSize
+    }
+
+    fun processCenter(selected: Int): FocusState? {
+        rightButtonFocusRequesters[selected]
+            ?.requestFocus()
+            ?.also { return FocusState.RIGHT_BUTTON }
+        return null
     }
 
     private fun FocusState.processRight(selected: Int, listState: LazyListState): FocusState? {
@@ -51,21 +59,10 @@ class FocusManager {
         return null
     }
 
-    private fun FocusState.processUp(selected: Int): FocusState? {
-        if (equals(FocusState.LEFT_BUTTON) || equals(FocusState.RIGHT_BUTTON)) {
-            cardFocusRequesters[selected]?.requestFocus()
-        }
-        return null
-    }
-
-    private fun FocusState.processDown(selected: Int): FocusState? {
-        if (equals(FocusState.CARD)) {
-            rightButtonFocusRequesters[selected]
-                ?.requestFocus()
-                ?.also { return FocusState.RIGHT_BUTTON }
-        } else {
-            externalFocusRequester?.requestFocus()
-        }
-        return null
+    companion object {
+        private val handledDirections = listOf(
+            Key.DirectionRight,
+            Key.DirectionLeft,
+        )
     }
 }
