@@ -1,5 +1,8 @@
 [versions]
 androidGradlePlugin = "8.5.2"
+minSdk = "28"
+targetSdk = "33"
+compileSdk = "35"
 androidx-activity-compose = "1.10.0"
 androidx-compose-bom = "2025.02.00"
 androidx-corektx = "1.15.0"
@@ -10,9 +13,6 @@ androidx-test = "1.6.1"
 androidx-test-espresso = "3.6.1"
 androidx-test-ext-junit = "1.2.1"
 androidx-window = "1.3.0"
-minSdk = "28"
-targetSdk = "33"
-compileSdk = "35"
 coroutines = "1.10.1"
 gradle-versions = "0.52.0"
 junit = "4.13.2"
@@ -21,6 +21,10 @@ kotlinx-serialization-json = "1.7.3"
 version-catalog-update = "0.8.5"
 accompanist-adaptive = "0.26.2-beta"
 tv-material = "1.0.0"
+uiautomator = "2.3.0"
+benchmarkMacroJunit4 = "1.3.3"
+leanback = "1.0.0"
+glide = "4.15.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
@@ -52,6 +56,10 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 google-accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist-adaptive" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+androidx-leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+bumptech-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.androidx.window)
     implementation(libs.androidx.tv.material)
 
+    implementation(libs.androidx.leanback)
+    implementation(libs.bumptech.glide)
+
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
